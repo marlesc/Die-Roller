@@ -2,7 +2,7 @@ import random
 NumDie = int(raw_input("Please enter how many die you would like to roll:"))
 NumberOfRolls = int(raw_input("Please enter how many times you would like to roll the die. This number should be less or equal to 10000000 for performance reasons:"))	
 NumberOfSides= int(raw_input("Please enter how many sides the die should have:"))
-NumberSought = int(raw_input("Please enter what number you would like to count. This number should be between 1 and INSERT VALUE:"))
+NumberSought = int(raw_input("Please enter what number you would like to count. This number should be between 1 and:"))
 MatchCounter = range(1,NumDie+1)
 Die = [0]*NumDie
 
