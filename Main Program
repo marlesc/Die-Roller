@@ -1,26 +1,75 @@
 import random 
-NumDie = int(raw_input("Please enter how many die you would like to roll:"))
-NumberOfRolls = int(raw_input("Please enter how many times you would like to roll the die. This number should be less or equal to 10000000 for performance reasons:"))	
-NumberOfSides= int(raw_input("Please enter how many sides the die should have:"))
-NumberSought = int(raw_input("Please enter what number you would like to count. This number should be between 1 and:"))
-MatchCounter = range(1,NumDie+1)
-Die = [0]*NumDie
+from Tkinter import *
 
-if NumberOfRolls >= 10000000:
-	print "Your selection for how many times you would like to roll the die is larger than the allowed value."
-	NumberOfRolls = int(raw_input("Please enter how many times you would like to roll the die. This number should be less or equal to 10000000 for performance reasons:"))
+master = Tk()
+fields = 'Number of Die', 'Sides on Die', 'Number of Rolls', 'Number Sought'
+NumDie = 0
+NumberOfRolls = 0
+NumberOfSides = 0
+NumberSought = 0
+   
+def makeform(root, fields):
+   entries = []
+   for field in fields:
+      row = Frame(root)
+      lab = Label(row, width=15, text=field, anchor='w')
+      ent = Entry(row)
+      row.pack(side=TOP, fill=X, padx=5, pady=5)
+      lab.pack(side=LEFT)
+      ent.pack(side=RIGHT, expand=YES, fill=X)
+      entries.append((field, ent))
+   return entries
 
-if NumberSought > NumberOfSides:
-	print "Your seletion of the number to search for is not possible."
-	NumberSought = int(raw_input("Please enter what number you would like to count. This number should be between 1 and INSERT VALUE"))
+def run(entries):
+	derp = dict([(e[0], e[1].get()) for e in entries]) 
+	print derp['Number of Die']
+	NumDie = int(derp['Number of Die'])
+	NumberOfRolls = int(derp['Number of Rolls'])
+	NumberOfSides = int(derp['Sides on Die'])
+	NumberSought = int(derp['Number Sought'])
+   
+	Die = [0]*NumDie
+	MatchCounter = range(1,NumDie+1)
 
-for index in xrange(0,NumberOfRolls):
-	for x in xrange(len(Die)):
-		Die[x] = random.randrange(1,NumberOfSides)
-	for c in xrange(len(Die)):
-		if Die[c] == NumberSought:
-			MatchCounter[c] += 1
-		
-print "All fractions below are the number of successes over the total number of rolls. Each Fraction corresponds to each Die."
-print MatchCounter[:]
-print [NumberOfRolls]*NumDie
+	if NumDie > 500:
+		msg = Message(master, text = "Your selection for how many die you would like to roll is not within the acceptable range.")
+		msg.config(bg='red', font=('times', 24, 'italic'))
+		msg.pack( )	
+			
+	if NumberOfRolls > 1000000:
+		msg = Message(master, text = "Your selection for how many times you would like to roll the die is larger than the allowed value.")
+		msg.config(bg='red', font=('times', 24, 'italic'))
+		msg.pack( )	
+			
+	if NumberSought > NumberOfSides:
+		msg = Message(master, text = "Your selection of the number to search for is not possible.")
+		msg.config(bg='red', font=('times', 24, 'italic'))
+		msg.pack( )	
+
+	if NumberSought <= NumberOfSides and NumberOfRolls <= 1000000 and NumDie <= 500:
+		for index in xrange(0,NumberOfRolls):
+			for x in xrange(len(Die)):
+				Die[x] = random.randrange(1,NumberOfSides)
+			for c in xrange(len(Die)): 
+				if Die[c] == NumberSought:
+					MatchCounter[c] += 1
+			
+		#print "All fractions below are the number of successes over the total number of rolls. Each Fraction corresponds to each Die."
+		#print MatchCounter[:]
+		#print [NumberOfRolls]*NumDie
+
+		msg = Message(master, text = "All fractions below are the number of successes over the total number of rolls. Each Fraction corresponds to each Die.")
+		msg.config(bg='green', font=('times', 24, 'italic'))
+		msg.pack( )	
+
+if __name__ == '__main__':
+	root = Tk()
+	ents = makeform(root, fields)
+	root.bind('<Return>', (lambda event, e=ents: run(e)))   
+	b1 = Button(root, text='Show',
+	          command=(lambda e=ents: run(e)))
+	b1.pack(side=LEFT, padx=5, pady=5)
+	b2 = Button(root, text='Quit', command=root.quit)
+	b2.pack(side=LEFT, padx=5, pady=5)
+
+	root.mainloop()
